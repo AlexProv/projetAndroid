@@ -6,13 +6,15 @@ class Hopital(models.Model):
     name = models.CharField(max_length=50, blank=True, default='',primary_key=True)
     lat = models.CharField(max_length=100, blank=True, default='')
     lng = models.CharField(max_length=100, blank=True, default='')
+    googleKey = models.CharField(max_length=10000, blank=True, default='')
+    addr = models.CharField(max_length=100, blank=True, default='')
+
 
 class Profile(models.Model):
     email = models.CharField(max_length=50, blank=True, default='',primary_key=True)
     surname = models.CharField(max_length=30, blank=True, default='')
     name = models.CharField(max_length=30, blank=True, default='')
     password = models.CharField(max_length=100, blank=True, default='')
-    gender = models.CharField(max_length=100, blank=True, default='')
     age = models.CharField(max_length=100, blank=True, default='')
     hopital = models.ForeignKey(Hopital)
 

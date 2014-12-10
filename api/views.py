@@ -25,13 +25,30 @@ def apiHopital(request):
                     return HttpResponse(toJson(h))
                 except: 
                     error = 'Hospital ' + name + ' dose not exist.'
+            if query = 'getWait':
+                try:
+                    h = Hopital.objects.filter(name = name)[0]
+                    tmList = HopitalTimeWait.objects.filter(hopital = h)
+                    lenTm = len(list(tmList))
+                    tempsMoyen = 0
+
+                    for i in tm: 
+                        tempsMoyen += tm.waitTime
+
+                    tempsMoyen = tempsMoyen / lenTm
+                    answer = {'TempsMoyen':tempsMoyen,'Count':lenTm}
+                    return HttpResponse(json.dumps(answer))
+                except: 
+                    error = 'Hospital ' + name + ' dose not exist.'
+
 
         if request.method == 'PUT':
             try:
                 name = data['name']
                 lat = data['lat']
                 lng = data['lng']
-                h = Hospital(name=name,lat=lat,lng=lng)
+                addr = data['addr']
+                h = Hospital(name=name,lat=lat,lng=lng,addr = addr)
                 h.save()
                 HttpResponse('created/updated ' + name)
             except:
@@ -45,6 +62,7 @@ def apiHopital(request):
             return HttpResponse('deleted ' + name)
     except: 
         return HttpResponse('Bad Json')
+
 # Create your views here.
 def apiProfile(request):
     request.body = data
@@ -75,10 +93,12 @@ def apiProfile(request):
                 email = data['email']
                 surname = data['surname']
                 name = data['name']
-                passowrd = data['passowrd']
-                gender = data['gender']
+                passowrd = data['password']
                 age = data['age']
-                p = Profile(email=email,surname=surname,name=name,passowrd=passowrd,gender=gender,age=age)
+                googleKey = data['key']
+                addr = data['addr']
+
+                p = Profile(email=email,surname=surname,name=name,passowrd=passowrd,age=age,addr=addr,googleKey = googleKey)
                 p.save()
                 HttpResponse('created/updated ' + email)
             except:
@@ -115,10 +135,10 @@ def apiHopitalTimeWait(request):
                     hopitalName = data['hopitalName']
                     h = Hopital.objects.filter(hopitalName = hopitalName)[0]
                     p = Profile.objects.filter(email = email)[0]
-                    rage = data['rage']
+                    #rage = data['rage']
                     time = data['time']
                     hw = Hospital.objects.filter(profile=p,hospital=h)[0]
-                    hw.rageQuit = rage
+                    #hw.rageQuit = rage
                     hw.waitTime = wait
                     hw.save()
                     return HttpResponse('updated')
