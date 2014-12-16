@@ -16,7 +16,6 @@ class Profile(models.Model):
     name = models.CharField(max_length=30, blank=True, default='')
     password = models.CharField(max_length=100, blank=True, default='')
     age = models.CharField(max_length=100, blank=True, default='')
-    hopital = models.ForeignKey(Hopital)
 
 class HopitalTimeWait(models.Model):
     hopital = models.ForeignKey(Hopital)
