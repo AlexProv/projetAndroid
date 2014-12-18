@@ -10,6 +10,7 @@ def toJson(data):
 
 def apiHopital(request):
     error = 'bad Json: '
+    print request.body
     try:
         #GET############
         if request.method == 'GET':
@@ -57,13 +58,22 @@ def apiHopital(request):
         if request.method == 'PUT':
             try:
                 name = data['name']
-                lat = data['lat']
-                lng = data['lng']
-                addr = data['addr']
-                key = data['key']
-                h = Hopital(name=name,lat=lat,lng=lng,addr = addr,googleKey = key)
-                h.save()
-                return HttpResponse('created/updated ' + name)
+                if len(Hopital.objects.filter(name = name)) == 0: 
+                    print 'FUCK'
+                    lat = data['lat']
+                    lng = data['lng']
+                    addr = data['addr']
+                    key = data['key']
+                    print lat
+                    print lng
+                    print addr
+                    print key
+                    h = Hopital(name=name,lat=lat,lng=lng,addr = addr,googleKey = key)
+                    h.save()
+                    print "FUCK3"
+                    return HttpResponse('created/updated ' + name)
+                else:
+                    return HttpResponse('already exist ' + name)
             except:
                 error = 'missing informations'
         if request.method == 'DELETE':
@@ -78,7 +88,9 @@ def apiHopital(request):
 
 # Create your views here.
 def apiProfile(request):
+    print request.body
     error = 'bad Json: '
+
     try:
         if request.method == 'GET':
             answer = toJson(Profile.objects.all())
@@ -92,6 +104,7 @@ def apiProfile(request):
             try:
                 if query == 'select':
                     p = Profile.objects.filter(email=email)
+                    print toJson(p)
                     return HttpResponse(toJson(p))
             except: 
                 error = 'Profile ' + email + ' dose not exist.'
