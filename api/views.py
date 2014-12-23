@@ -10,7 +10,6 @@ def toJson(data):
 
 def apiHopital(request):
     error = 'bad Json: '
-    print request.body
     try:
         #GET############
         if request.method == 'GET':
@@ -45,7 +44,6 @@ def apiHopital(request):
 
                 for i in tmList:
 
-                    print i.waitTime
                     tempsMoyen += int(i.waitTime)
 
                 tempsMoyen = tempsMoyen / lenTm
@@ -59,18 +57,15 @@ def apiHopital(request):
             try:
                 name = data['name']
                 if len(Hopital.objects.filter(name = name)) == 0: 
-                    print 'FUCK'
+
                     lat = data['lat']
                     lng = data['lng']
                     addr = data['addr']
                     key = data['key']
-                    print lat
-                    print lng
-                    print addr
-                    print key
+                   
                     h = Hopital(name=name,lat=lat,lng=lng,addr = addr,googleKey = key)
                     h.save()
-                    print "FUCK3"
+                    
                     return HttpResponse('created/updated ' + name)
                 else:
                     return HttpResponse('already exist ' + name)
@@ -88,7 +83,6 @@ def apiHopital(request):
 
 # Create your views here.
 def apiProfile(request):
-    print request.body
     error = 'bad Json: '
 
     try:
@@ -104,7 +98,7 @@ def apiProfile(request):
             try:
                 if query == 'select':
                     p = Profile.objects.filter(email=email)
-                    print toJson(p)
+
                     return HttpResponse(toJson(p))
             except: 
                 error = 'Profile ' + email + ' dose not exist.'
@@ -133,6 +127,7 @@ def apiProfile(request):
         return HttpResponse('Bad Json')
 
 def apiHopitalTimeWait(request):
+    print request.body
     try:
         if request.method == 'GET':
             answer = toJson(HopitalTimeWait.objects.all())
@@ -171,11 +166,11 @@ def apiHopitalTimeWait(request):
             email = data['email']
             hopitalName = data['hopitalName']
             date = data['date']
-
+            time = data['time']
             h = Hopital.objects.filter(name = hopitalName)[0]
             p = Profile.objects.filter(email = email)[0]
             
-            hw = HopitalTimeWait(profile=p,hopital=h,date=date,rageQuit='False',waitTime='0')
+            hw = HopitalTimeWait(profile=p,hopital=h,date=date,rageQuit='False',waitTime=time)
             
             hw.save()
             return HttpResponse('created')
